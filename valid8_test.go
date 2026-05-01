@@ -2,11 +2,13 @@ package valid8_test
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/audryus/valid8"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -87,6 +89,50 @@ func TestRegisterTranslation(t *testing.T) {
 	containsEquals(t, mep, "teststruct.field", "Field no es valido")
 }
 
+func TestRegisterTranslationErrors(t *testing.T) {
+	v := valid8.New()
+
+	tests := []struct {
+		name        string
+		translation valid8.Translation
+		expectedErr error
+	}{
+		{
+			name: "Missing Tag",
+			translation: valid8.Translation{
+				Text:   "some text",
+				Locale: valid8.EN,
+			},
+			expectedErr: valid8.ErrTagMandatory,
+		},
+		{
+			name: "Missing Text",
+			translation: valid8.Translation{
+				Tag:    "required",
+				Locale: valid8.EN,
+			},
+			expectedErr: valid8.ErrTextMandatory,
+		},
+		{
+			name: "Missing Locale",
+			translation: valid8.Translation{
+				Tag:  "required",
+				Text: "is required",
+			},
+			expectedErr: valid8.ErrLocaleMandatory,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := v.RegisterTranslation(tt.translation)
+			if !errors.Is(err, tt.expectedErr) {
+				t.Errorf("Expected error %v, got %v", tt.expectedErr, err)
+			}
+		})
+	}
+}
+
 func TestWithAllLocales(t *testing.T) {
 	v := valid8.New(valid8.WithAllLocales())
 	if v == nil {
@@ -123,6 +169,112 @@ func TestWithAllLocales(t *testing.T) {
 			mep := valid8.ErrorsToMap(errs)
 			containsEquals(t, mep, "teststruct.name", tt.expected)
 		})
+	}
+}
+
+func TestRegisterTranslationAdvanced(t *testing.T) {
+	v := valid8.New(valid8.WithLocales(valid8.PT_BR))
+
+	// Test Custom TranslationFn
+	v.RegisterTranslation(valid8.Translation{
+		Tag:    "customfn",
+		Text:   "ignored text",
+		Locale: valid8.PT_BR,
+		TranslationFn: func(ut ut.Translator, fe validator.FieldError) string {
+			return "COMPLETELY CUSTOM"
+		},
+	})
+
+	type TestStruct struct {
+		Field string `validate:"customfn"`
+	}
+	v.Validator.RegisterValidation("customfn", func(fl validator.FieldLevel) bool { return false })
+
+	errs := v.Struct(TestStruct{Field: "x"}, valid8.PT_BR)
+	if len(errs) != 1 || errs[0].Message() != "COMPLETELY CUSTOM" {
+		t.Errorf("Expected COMPLETELY CUSTOM, got %v", errs[0].Message())
+	}
+
+	// Test IgnoreFallback when locale is NOT registered
+	// FR is not registered, IgnoreFallback is true.
+	// This should result in no translation being registered at all (since EN fallback is skipped).
+	v.RegisterTranslation(valid8.Translation{
+		Tag:            "onlyfr",
+		Text:           "seulement fr",
+		Locale:         valid8.FR,
+		IgnoreFallback: true,
+	})
+	v.Validator.RegisterValidation("onlyfr", func(fl validator.FieldLevel) bool { return false })
+
+	errs = v.Struct(struct {
+		Field string `validate:"onlyfr"`
+	}{Field: "x"}, valid8.EN)
+	// When translation is missing, it returns the tag or a default message from validator
+	if len(errs) != 1 || errs[0].Message() == "seulement fr" {
+		t.Errorf("Expected translation to be missing, but got %v", errs[0].Message())
+	}
+}
+
+func TestStructAdvanced(t *testing.T) {
+	v := valid8.New()
+
+	// Test no errors
+	type TestStruct struct {
+		Field string `validate:"required"`
+	}
+	errs := v.Struct(TestStruct{Field: "valid"}, valid8.EN)
+	if len(errs) != 0 {
+		t.Errorf("Expected no errors, got %d", len(errs))
+	}
+
+	// Test locale not found, fallback to EN
+	// PT_BR is not registered, so it should use EN translation for 'required'
+	errs = v.Struct(TestStruct{Field: ""}, valid8.PT_BR)
+	if len(errs) == 0 {
+		t.Fatal("Expected errors, got none")
+	}
+	mep := valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field is a required field")
+}
+
+func TestRegisterTranslationOverride(t *testing.T) {
+	v := valid8.New()
+
+	v.Validator.RegisterValidation("ovr", func(fl validator.FieldLevel) bool { return false })
+
+	// First registration
+	v.RegisterTranslation(valid8.Translation{
+		Tag:    "ovr",
+		Text:   "{0} Initial",
+		Locale: valid8.EN,
+	})
+
+	// Second registration (overrides)
+	v.RegisterTranslation(valid8.Translation{
+		Tag:    "ovr",
+		Text:   "{0} Overridden",
+		Locale: valid8.EN,
+	})
+
+	type TestStruct struct {
+		Field string `validate:"ovr"`
+	}
+	errs := v.Struct(TestStruct{Field: "x"}, valid8.EN)
+	if errs[0].Message() != "Field Overridden" {
+		t.Errorf("Expected Field Overridden, got %v", errs[0].Message())
+	}
+
+	// Third registration (IgnoreOverride = true)
+	v.RegisterTranslation(valid8.Translation{
+		Tag:            "ovr",
+		Text:           "{0} Ignored",
+		Locale:         valid8.EN,
+		IgnoreOverride: true,
+	})
+
+	errs = v.Struct(TestStruct{Field: "x"}, valid8.EN)
+	if errs[0].Message() != "Field Overridden" {
+		t.Errorf("Expected Field Overridden (no change), got %v", errs[0].Message())
 	}
 }
 

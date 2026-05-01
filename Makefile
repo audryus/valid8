@@ -1,7 +1,7 @@
 .PHONY: test release
 
 test:
-	@go test -count=1 ./...
+	@go test -v -count=1 ./...
 
 # Usage: make release VERSION=v1.0.0
 release: test

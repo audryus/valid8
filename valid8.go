@@ -1,11 +1,21 @@
 package valid8
 
 import (
+	"errors"
 	"log"
 	"strings"
 
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+)
+
+var (
+	// ErrTagMandatory is returned when a translation is registered without a tag.
+	ErrTagMandatory = errors.New("Tag is mandatory")
+	// ErrTextMandatory is returned when a translation is registered without text.
+	ErrTextMandatory = errors.New("Text is mandatory")
+	// ErrLocaleMandatory is returned when a translation is registered without a locale.
+	ErrLocaleMandatory = errors.New("Locale is mandatory")
 )
 
 // ValidationErrors wraps a validator.FieldError and its corresponding translated message.
@@ -64,7 +74,19 @@ func defaultTranslationFn(tag string) func(ut ut.Translator, fe validator.FieldE
 // By default, it also registers the translation for the English (EN) locale as a fallback,
 // unless IgnoreFallback is set to true. This ensures that the custom validation tag
 // has a meaningful message even if the requested language is not available.
-func (v *Valid8) RegisterTranslation(translation Translation) {
+func (v *Valid8) RegisterTranslation(translation Translation) error {
+	if translation.Tag == "" {
+		return ErrTagMandatory
+	}
+
+	if translation.Text == "" {
+		return ErrTextMandatory
+	}
+
+	if translation.Locale == "" {
+		return ErrLocaleMandatory
+	}
+
 	loc, ok := v.locales[translation.Locale]
 
 	translationFn := translation.TranslationFn
@@ -89,6 +111,8 @@ func (v *Valid8) RegisterTranslation(translation Translation) {
 			registerFn,
 			translationFn)
 	}
+
+	return nil
 }
 
 // Struct validates the provided struct 's' using the specified 'language' for error messages.
