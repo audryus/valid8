@@ -31,6 +31,66 @@ type Valid8 struct {
 	locales   map[Locale]ut.Translator
 }
 
+// Translation defines the configuration for a custom validation tag translation.
+type Translation struct {
+	// IgnoreFallback if true, prevents the translation from being registered for the default English (EN) locale
+	// if the primary Locale is different.
+	IgnoreFallback bool
+	// Text is the localized error message template (e.g., "{0} is invalid").
+	Text string
+	// IgnoreOverride if true, prevents the translation from overriding an existing one for the same tag and locale.
+	IgnoreOverride bool
+	// Locale is the target language for this translation.
+	Locale Locale
+	// Tag is the validation tag identifier (e.g., "required", "email", "custom_tag").
+	Tag string
+	// TranslationFn is the function responsible for generating the localized error message.
+	// This field is optional; if not provided, it defaults to an internal translation function
+	// that retrieves the message from the universal-translator using the specified Tag.
+	TranslationFn validator.TranslationFunc
+}
+
+// defaultTranslationFn returns a standard TranslationFunc that retrieves the translated
+// message for a specific tag from the universal-translator. It automatically maps
+// the field name to the {0} placeholder in the translation template.
+func defaultTranslationFn(tag string) func(ut ut.Translator, fe validator.FieldError) string {
+	return func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T(tag, fe.Field())
+		return t
+	}
+}
+
+// RegisterTranslation registers a custom translation for a specific locale.
+// By default, it also registers the translation for the English (EN) locale as a fallback,
+// unless IgnoreFallback is set to true. This ensures that the custom validation tag
+// has a meaningful message even if the requested language is not available.
+func (v *Valid8) RegisterTranslation(translation Translation) {
+	loc, ok := v.locales[translation.Locale]
+
+	translationFn := translation.TranslationFn
+
+	if translationFn == nil {
+		translationFn = defaultTranslationFn(translation.Tag)
+	}
+
+	registerFn := func(ut ut.Translator) error {
+		return ut.Add(translation.Tag,
+			translation.Text,
+			!translation.IgnoreOverride)
+	}
+
+	if ok {
+		v.Validator.RegisterTranslation(translation.Tag, loc,
+			registerFn,
+			translationFn)
+	}
+	if !translation.IgnoreFallback {
+		v.Validator.RegisterTranslation(translation.Tag, v.locales[EN],
+			registerFn,
+			translationFn)
+	}
+}
+
 // Struct validates the provided struct 's' using the specified 'language' for error messages.
 // If the specified language is not registered, it defaults to English (EN).
 func (v *Valid8) Struct(s any, language Locale) []ValidationErrors {

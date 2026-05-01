@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/audryus/valid8"
+	"github.com/go-playground/validator/v10"
 )
 
 func containsEquals(t *testing.T, mep map[string]string, key, value string) {
@@ -16,6 +17,74 @@ func containsEquals(t *testing.T, mep map[string]string, key, value string) {
 	} else if v != value {
 		t.Errorf("Founded %s, expected %s", v, value)
 	}
+}
+
+func TestRegisterTranslation(t *testing.T) {
+	v := valid8.New(valid8.WithLocales(valid8.PT_BR))
+
+	// Register a new validation tag that always fails
+	err := v.Validator.RegisterValidation("mytag", func(fl validator.FieldLevel) bool {
+		return false
+	})
+	if err != nil {
+		t.Fatalf("Failed to register validation: %v", err)
+	}
+
+	// Register the translation for PT_BR without explicitly providing TranslationFn.
+	// It should now fallback to DefaultTranslationFn automatically.
+	v.RegisterTranslation(valid8.Translation{
+		Tag:    "mytag",
+		Text:   "{0} invalida",
+		Locale: valid8.PT_BR,
+	})
+
+	type TestStruct struct {
+		Field string `validate:"mytag"`
+	}
+
+	s := TestStruct{Field: "anything"}
+
+	// Test PT_BR
+	errs := v.Struct(s, valid8.PT_BR)
+	mep := valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field invalida")
+
+	// Test ES (uses fallback EN)
+	errs = v.Struct(s, valid8.ES)
+	mep = valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field invalida")
+
+	// Register the translation for ES without explicitly providing TranslationFn.
+	// It should now fallback to DefaultTranslationFn automatically.
+	v.RegisterTranslation(valid8.Translation{
+		Tag:    "mytag",
+		Text:   "{0} no es valido",
+		Locale: valid8.ES,
+	})
+
+	// Test ES
+	errs = v.Struct(s, valid8.ES)
+	mep = valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field no es valido")
+
+	// Test DE (uses fallback EN)
+	errs = v.Struct(s, valid8.DE)
+	mep = valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field no es valido")
+
+	// Register the translation for DE without explicitly providing TranslationFn.
+	// It should now fallback to DefaultTranslationFn automatically.
+	v.RegisterTranslation(valid8.Translation{
+		IgnoreFallback: true,
+		Tag:            "mytag",
+		Text:           "{0} ist nicht gültig",
+		Locale:         valid8.DE,
+	})
+
+	// Test FR (uses fallback EN)
+	errs = v.Struct(s, valid8.FR)
+	mep = valid8.ErrorsToMap(errs)
+	containsEquals(t, mep, "teststruct.field", "Field no es valido")
 }
 
 func TestWithAllLocales(t *testing.T) {
