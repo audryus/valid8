@@ -94,7 +94,7 @@ func registerCustomJATranslations(v *Valid8, trans ut.Translator) error {
 			override:    false,
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0}は有効なBCP 47言語タグでなければなりません",
 			override:    false,
 		},
@@ -111,7 +111,7 @@ func registerCustomJATranslations(v *Valid8, trans ut.Translator) error {
 		{
 			tag:         "postcode_iso3166_alpha2",
 			translation: "{0}は{1}国の郵便番号の書式と一致しません",
-			override:    false,
+			override:    true,
 			customTransFunc: func(ut ut.Translator, fe validator.FieldError) string {
 				t, err := ut.T(fe.Tag(), fe.Field(), fe.Param())
 				if err != nil {

@@ -24,7 +24,7 @@ func registerCustomZHTranslations(v *Valid8, trans ut.Translator) error {
 			override:    false,
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0}必须是有效的BCP 47语言标签",
 			override:    false,
 		},

@@ -175,7 +175,7 @@ func registerCustomESTranslations(v *Valid8, trans ut.Translator) error {
 			},
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0} debe ser un código de idioma BCP 47 válido",
 			override:    false,
 		},

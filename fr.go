@@ -190,7 +190,7 @@ func registerCustomFRTranslations(v *Valid8, trans ut.Translator) error {
 			},
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0} doit être un code de langue BCP 47 valide",
 			override:    false,
 		},

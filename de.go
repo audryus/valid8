@@ -48,7 +48,7 @@ func registerCustomDETranslations(v *Valid8, trans ut.Translator) error {
 			override:    false,
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0} muss ein gültiger BCP 47-Sprachcode sein",
 			override:    false,
 		},

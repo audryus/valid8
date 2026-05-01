@@ -1,10 +1,10 @@
 package valid8
 
 import (
-	locale "github.com/go-playground/locales/de"
+	locale "github.com/go-playground/locales/zh_Hant_TW"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	translations "github.com/go-playground/validator/v10/translations/de"
+	translations "github.com/go-playground/validator/v10/translations/zh_tw"
 )
 
 func registerZHTW(v *Valid8) {
@@ -39,7 +39,7 @@ func registerCustomZHTWTranslations(v *Valid8, trans ut.Translator) error {
 			override:    false,
 		},
 		{
-			tag:         "bcp47_strict_language_tag",
+			tag:         "bcp47_language_tag",
 			translation: "{0}必須是有效的BCP 47語言標籤",
 			override:    false,
 		},
