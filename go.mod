@@ -1,6 +1,6 @@
 module github.com/audryus/valid8
 
-go 1.26.1
+go 1.26.4
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
