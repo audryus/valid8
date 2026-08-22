@@ -8,6 +8,13 @@ release: test
 ifndef VERSION
 	$(error VERSION is required. Usage: make release VERSION=v1.0.0)
 endif
-	@git tag $(VERSION)
-	@git push origin $(VERSION)
+	@git fetch origin trunk
+	@git checkout trunk
+	@git pull --ff-only origin trunk
+	@if ! echo "$(VERSION)" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$$'; then \
+		echo "Invalid version: '$(VERSION)'. Expected format vX.Y.Z"; exit 1; fi
+	@if git rev-parse "$(VERSION)" >/dev/null 2>&1; then \
+		echo "Tag $(VERSION) already exists."; exit 1; fi
+	@git tag -a "$(VERSION)" -m "Release $(VERSION) (commit $$(git rev-parse --short HEAD))"
+	@git push origin "$(VERSION)"
 	@echo "Released $(VERSION)"
