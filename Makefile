@@ -3,14 +3,16 @@
 test:
 	@go test -v -count=1 ./...
 
-# Usage: make release VERSION=v1.0.0
-release: test
-ifndef VERSION
-	$(error VERSION is required. Usage: make release VERSION=v1.0.0)
-endif
+update:
 	@git fetch origin trunk
 	@git checkout trunk
 	@git pull --ff-only origin trunk
+
+# Usage: make release VERSION=v1.0.0
+release: update test
+ifndef VERSION
+	$(error VERSION is required. Usage: make release VERSION=v1.0.0)
+endif
 	@if ! echo "$(VERSION)" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$$'; then \
 		echo "Invalid version: '$(VERSION)'. Expected format vX.Y.Z"; exit 1; fi
 	@if git rev-parse "$(VERSION)" >/dev/null 2>&1; then \
