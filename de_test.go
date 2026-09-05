@@ -3,7 +3,7 @@ package valid8_test
 import (
 	"testing"
 
-	"github.com/audryus/valid8"
+	"codeberg.org/audryus/valid8"
 )
 
 func TestDETranslations(t *testing.T) {

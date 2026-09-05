@@ -3,7 +3,7 @@ package valid8_test
 import (
 	"testing"
 
-	"github.com/audryus/valid8"
+	"codeberg.org/audryus/valid8"
 )
 
 func TestJATranslations(t *testing.T) {
@@ -29,22 +29,22 @@ func TestJATranslations(t *testing.T) {
 		ExcludedWithoutAll string `validate:"excluded_without_all=MissingField AnotherMissingField"`
 
 		// Other tags
-		AlphaSpace             string   `validate:"alphaspace"`
-		AlphanumSpace          string   `validate:"alphanumspace"`
-		AlphaUnicode           string   `validate:"alphaunicode"`
-		AlphanumUnicode        string   `validate:"alphanumunicode"`
-		Bcp47LanguageTag       string   `validate:"bcp47_language_tag"`
-		Cron                   string   `validate:"cron"`
-		Fqdn                   string   `validate:"fqdn"`
-		PostcodeIso3166Alpha2  string   `validate:"postcode_iso3166_alpha2=JP"`
-		UrnRFC2141              string   `validate:"urn_rfc2141"`
-		ValidateFn             string   `validate:"validateFn"`
+		AlphaSpace            string `validate:"alphaspace"`
+		AlphanumSpace         string `validate:"alphanumspace"`
+		AlphaUnicode          string `validate:"alphaunicode"`
+		AlphanumUnicode       string `validate:"alphanumunicode"`
+		Bcp47LanguageTag      string `validate:"bcp47_language_tag"`
+		Cron                  string `validate:"cron"`
+		Fqdn                  string `validate:"fqdn"`
+		PostcodeIso3166Alpha2 string `validate:"postcode_iso3166_alpha2=JP"`
+		UrnRFC2141            string `validate:"urn_rfc2141"`
+		ValidateFn            string `validate:"validateFn"`
 
 		// Helper fields
-		OtherField           string
-		AnotherField         string
-		MissingField         string
-		AnotherMissingField  string
+		OtherField          string
+		AnotherField        string
+		MissingField        string
+		AnotherMissingField string
 	}
 
 	s := TestStruct{
@@ -61,16 +61,16 @@ func TestJATranslations(t *testing.T) {
 		ExcludedWithoutAll: "present",
 
 		// Trigger others with invalid data
-		AlphaSpace:             "123",
-		AlphanumSpace:          "!",
-		AlphaUnicode:           "123",
-		AlphanumUnicode:        "!",
-		Bcp47LanguageTag:       "!!!",
-		Cron:                   "abc",
-		Fqdn:                   "abc",
-		PostcodeIso3166Alpha2:  "abc",
-		UrnRFC2141:             "abc",
-		ValidateFn:             "invalid",
+		AlphaSpace:            "123",
+		AlphanumSpace:         "!",
+		AlphaUnicode:          "123",
+		AlphanumUnicode:       "!",
+		Bcp47LanguageTag:      "!!!",
+		Cron:                  "abc",
+		Fqdn:                  "abc",
+		PostcodeIso3166Alpha2: "abc",
+		UrnRFC2141:            "abc",
+		ValidateFn:            "invalid",
 	}
 
 	err := v.Struct(s, valid8.JA)

@@ -3,7 +3,7 @@ package valid8_test
 import (
 	"testing"
 
-	"github.com/audryus/valid8"
+	"codeberg.org/audryus/valid8"
 )
 
 func TestFRTranslations(t *testing.T) {
@@ -30,32 +30,32 @@ func TestFRTranslations(t *testing.T) {
 		ExcludedWithoutAll string `validate:"excluded_without_all=MissingField AnotherMissingField"`
 
 		// Other tags
-		IsDefault               int      `validate:"isdefault"`
-		AlphaSpace              string   `validate:"alphaspace"`
-		AlphanumSpace           string   `validate:"alphanumspace"`
-		AlphaUnicode            string   `validate:"alphaunicode"`
-		AlphanumUnicode         string   `validate:"alphanumunicode"`
-		E164                    string   `validate:"e164"`
-		UrnRFC2141              string   `validate:"urn_rfc2141"`
-		Fqdn                    string   `validate:"fqdn"`
-		Unique                  []int    `validate:"unique"`
-		Cron                    string   `validate:"cron"`
-		Json                    string   `validate:"json"`
-		Jwt                     string   `validate:"jwt"`
-		Lowercase               string   `validate:"lowercase"`
-		Uppercase               string   `validate:"uppercase"`
-		Datetime                string   `validate:"datetime=2006-01-02"`
-		Timezone                string   `validate:"timezone"`
-		PostcodeIso3166Alpha2   string   `validate:"postcode_iso3166_alpha2=FR"`
-		PostcodeIso3166Alpha2F  string   `validate:"postcode_iso3166_alpha2_field=CountryCode"`
-		Bcp47LanguageTag        string   `validate:"bcp47_language_tag"`
+		IsDefault              int    `validate:"isdefault"`
+		AlphaSpace             string `validate:"alphaspace"`
+		AlphanumSpace          string `validate:"alphanumspace"`
+		AlphaUnicode           string `validate:"alphaunicode"`
+		AlphanumUnicode        string `validate:"alphanumunicode"`
+		E164                   string `validate:"e164"`
+		UrnRFC2141             string `validate:"urn_rfc2141"`
+		Fqdn                   string `validate:"fqdn"`
+		Unique                 []int  `validate:"unique"`
+		Cron                   string `validate:"cron"`
+		Json                   string `validate:"json"`
+		Jwt                    string `validate:"jwt"`
+		Lowercase              string `validate:"lowercase"`
+		Uppercase              string `validate:"uppercase"`
+		Datetime               string `validate:"datetime=2006-01-02"`
+		Timezone               string `validate:"timezone"`
+		PostcodeIso3166Alpha2  string `validate:"postcode_iso3166_alpha2=FR"`
+		PostcodeIso3166Alpha2F string `validate:"postcode_iso3166_alpha2_field=CountryCode"`
+		Bcp47LanguageTag       string `validate:"bcp47_language_tag"`
 
 		// Helper fields
-		OtherField           string
-		AnotherField         string
-		CountryCode          string
-		MissingField         string
-		AnotherMissingField  string
+		OtherField          string
+		AnotherField        string
+		CountryCode         string
+		MissingField        string
+		AnotherMissingField string
 	}
 
 	s := TestStruct{

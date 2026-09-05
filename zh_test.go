@@ -3,7 +3,7 @@ package valid8_test
 import (
 	"testing"
 
-	"github.com/audryus/valid8"
+	"codeberg.org/audryus/valid8"
 )
 
 func TestZHTranslations(t *testing.T) {
@@ -13,20 +13,20 @@ func TestZHTranslations(t *testing.T) {
 	}
 
 	type TestStruct struct {
-		AlphaSpace              string   `validate:"alphaspace"`
-		Bcp47LanguageTag        string   `validate:"bcp47_language_tag"`
-		Cron                    string   `validate:"cron"`
-		Fqdn                    string   `validate:"fqdn"`
-		Jwt                     string   `validate:"jwt"`
-		PostcodeIso3166Alpha2   string   `validate:"postcode_iso3166_alpha2=CN"`
-		PostcodeIso3166Alpha2F  string   `validate:"postcode_iso3166_alpha2_field=CountryCode"`
-		Timezone                string   `validate:"timezone"`
-		Unique                  []int    `validate:"unique"`
-		UrnRFC2141              string   `validate:"urn_rfc2141"`
-		ValidateFn              string   `validate:"validateFn"`
+		AlphaSpace             string `validate:"alphaspace"`
+		Bcp47LanguageTag       string `validate:"bcp47_language_tag"`
+		Cron                   string `validate:"cron"`
+		Fqdn                   string `validate:"fqdn"`
+		Jwt                    string `validate:"jwt"`
+		PostcodeIso3166Alpha2  string `validate:"postcode_iso3166_alpha2=CN"`
+		PostcodeIso3166Alpha2F string `validate:"postcode_iso3166_alpha2_field=CountryCode"`
+		Timezone               string `validate:"timezone"`
+		Unique                 []int  `validate:"unique"`
+		UrnRFC2141             string `validate:"urn_rfc2141"`
+		ValidateFn             string `validate:"validateFn"`
 
 		// Helper fields
-		CountryCode          string
+		CountryCode string
 	}
 
 	s := TestStruct{

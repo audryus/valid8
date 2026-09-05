@@ -1,9 +1,9 @@
 # valid8
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/audryus/valid8.svg)](https://pkg.go.dev/github.com/audryus/valid8)
-[![Go Report Card](https://goreportcard.com/badge/github.com/audryus/valid8)](https://goreportcard.com/report/github.com/audryus/valid8)
-[![CI](https://github.com/audryus/valid8/actions/workflows/ci.yml/badge.svg)](https://github.com/audryus/valid8/actions/workflows/ci.yml)
-[![Release](https://github.com/audryus/valid8/actions/workflows/release.yml/badge.svg)](https://github.com/audryus/valid8/actions/workflows/release.yml)
+[![Go Reference](https://pkg.go.dev/badge/codeberg.org/audryus/valid8.svg)](https://pkg.go.dev/codeberg.org/audryus/valid8)
+[![Go Report Card](https://goreportcard.com/badge/codeberg.org/audryus/valid8)](https://goreportcard.com/report/codeberg.org/audryus/valid8)
+[![CI](https://codeberg.org/audryus/valid8/actions/workflows/ci.yml/badge.svg)](https://codeberg.org/audryus/valid8/actions/workflows/ci.yml)
+[![Release](https://codeberg.org/audryus/valid8/actions/workflows/release.yml/badge.svg)](https://codeberg.org/audryus/valid8/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 > [!CAUTION]
@@ -32,7 +32,7 @@ When building APIs with `go-playground/validator`, returning translated error me
 ## Installation
 
 ```bash
-go get github.com/audryus/valid8
+go get codeberg.org/audryus/valid8
 ```
 
 ---
@@ -46,7 +46,7 @@ import (
     "encoding/json"
     "fmt"
 
-    "github.com/audryus/valid8"
+    "codeberg.org/audryus/valid8"
 )
 
 type CreateUserRequest struct {
