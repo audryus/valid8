@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"codeberg.org/audryus/valid8"
+	"github.com/audryus/valid8"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )

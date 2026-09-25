@@ -1,4 +1,4 @@
-module codeberg.org/audryus/valid8
+module github.com/audryus/valid8
 
 go 1.27.0
 

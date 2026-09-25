@@ -1,7 +1,15 @@
-.PHONY: test release
+.PHONY: test vuln release
 
 test:
 	@go test -v -count=1 ./...
+
+# Pinned govulncheck version so local scans reproduce CI exactly.
+# Override with: make vuln GOVULNCHECK_VERSION=vX.Y.Z
+GOVULNCHECK_VERSION ?= v1.8.0
+
+# Runs the same vulnerability scan as CI against all packages.
+vuln:
+	go run golang.org/x/vuln/cmd/govulncheck@$(GOVULNCHECK_VERSION) ./...
 
 update:
 	@git fetch origin trunk

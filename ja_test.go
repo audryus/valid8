@@ -3,7 +3,7 @@ package valid8_test
 import (
 	"testing"
 
-	"codeberg.org/audryus/valid8"
+	"github.com/audryus/valid8"
 )
 
 func TestJATranslations(t *testing.T) {
